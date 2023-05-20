@@ -1,5 +1,9 @@
 const express = require("express");
 const cors = require("cors");
+
+const figurein = require("./data.json");
+const category = require("./category.json");
+
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -9,9 +13,7 @@ app.use(cors());
 app.use(express.json());
 // 01811 - 477711;
 
-console.log(process.env.DB_USER);
-
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.mrt0xqs.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -25,20 +27,78 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
-        // Send a ping to confirm a successful connection
+        // await client.connect();
+
+        const figureCollection = client.db("animeFig").collection("figures");
+        const addedFigureCollection = client.db("animeFig").collection("addedFigure");
+
+        app.get("/figures", async (req, res) => {
+            const cursor = figureCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        app.get("/figures/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await figureCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.get("/addedFigure", async (req, res) => {
+            const cursor = addedFigureCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        app.get("/addedFigure/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await addedFigureCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.post("/addedFigure", async (req, res) => {
+            const figure = req.body;
+            const result = await addedFigureCollection.insertOne(figure);
+            res.send(result);
+        });
+
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
     }
 }
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
     res.send("animeFig server is running");
+});
+
+app.get("/figurein", (req, res) => {
+    res.send(figurein);
+});
+
+app.get("/figurein/:id", (req, res) => {
+    const id = req.params.id;
+
+    const figure = figurein.find((n) => n._id === id);
+    res.send(figure);
+});
+
+app.get("/category", (req, res) => {
+    res.send(category);
+});
+
+app.get("/category/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    if (id === 0) {
+        res.send(figurein);
+    } else {
+        const figsCategory = figurein.filter((figs) => parseInt(figs.category_id) === id);
+        res.send(figsCategory);
+    }
 });
 
 app.listen(port, () => {
