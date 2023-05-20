@@ -45,9 +45,20 @@ async function run() {
             res.send(result);
         });
 
+        // app.get("/addedFigure", async (req, res) => {
+        //     const cursor = addedFigureCollection.find();
+        //     const result = await cursor.toArray();
+        //     res.send(result);
+        // });
+
         app.get("/addedFigure", async (req, res) => {
-            const cursor = addedFigureCollection.find();
-            const result = await cursor.toArray();
+            let query = {};
+
+            if (req.query?.email) {
+                query = { email: req.query.email };
+            }
+
+            const result = await addedFigureCollection.find(query).toArray();
             res.send(result);
         });
 
