@@ -238,5 +238,17 @@
         "Manufacturer": "Robot Spirits line",
         "description": "The original RX-78-2 GUNDAM ver. A.N.I.M.E. is back, with some new colors and parts, commemorating fifteen years of ROBOT SPIRITS with an original stand and character reaction plates! \n A vast number of options, including an all-new Gundam Hammer and Beam Javelin accessories, let you re-create even more scenes.",
         "price": "$79.99"
+    },
+    {
+        "_id": "646550b54366de7ca9496e8a",
+        "category_id": "3",
+        "name": "TAMASHII NATIONS - Berserk - Guts (Berserker Armor), Bandai Spirits S.H.Figuarts Action Figure",
+        "img": "https://m.media-amazon.com/images/I/81YFvUrchWL._AC_SX522_.jpg",
+        "seller": "Mech Corner",
+        "ratings": 4.9,
+        "quantity": "21",
+        "Manufacturer": "TAMASHII NATIONS",
+        "description": "'There is no paradise in this world...'' From the dark fantasy 'Berserk' comes GUTS dressed in Berserker Armor he obtained on a quest to a witch's mansion deep in the forest \n The set includes GUTS ' huge sword and a variety of accessories and expression parts that let you replicate your favorite scenes \n Stands approximately 6.3 inch tall \n [Set Contents] Main Body, Two pairs of optional hands, Two optional expression parts, Bowgun, Cannon, Bowgun hand option, Beherit, Cape, Dragonslayer, Knife \n Only product with affixed official Bandai Namco label has been thoroughly tested for safety and meets all North American consumer product safety regulations and entitles the purchaser to product support assistance",
+        "price": "$100.00"
     }
 ]

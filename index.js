@@ -45,6 +45,12 @@ async function run() {
             res.send(result);
         });
 
+        app.post("/figures", async (req, res) => {
+            const figures = req.body;
+            const result = await figureCollection.insertOne(figures);
+            res.send(result);
+        });
+
         // app.get("/addedFigure", async (req, res) => {
         //     const cursor = addedFigureCollection.find();
         //     const result = await cursor.toArray();
@@ -72,6 +78,30 @@ async function run() {
         app.post("/addedFigure", async (req, res) => {
             const figure = req.body;
             const result = await addedFigureCollection.insertOne(figure);
+            res.send(result);
+        });
+
+        app.put("/addedFigure/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+
+            const updatedFigs = req.body;
+            const figures = {
+                $set: {
+                    img: updatedFigs.img,
+                    email: updatedFigs.email,
+                    name: updatedFigs.name,
+                    price: updatedFigs.price,
+                    quantity: updatedFigs.quantity,
+                    seller: updatedFigs.seller,
+                    description: updatedFigs.description,
+                    Manufacturer: updatedFigs.Manufacturer,
+                    category: updatedFigs.category,
+                    rating: updatedFigs.rating,
+                },
+            };
+            const result = await addedFigureCollection.updateOne(filter, figures, options);
             res.send(result);
         });
 
