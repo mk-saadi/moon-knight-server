@@ -105,6 +105,13 @@ async function run() {
             res.send(result);
         });
 
+        app.delete("/addedFigure/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await addedFigureCollection.deleteOne(query);
+            res.send(result);
+        });
+
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
@@ -116,31 +123,31 @@ app.get("/", (req, res) => {
     res.send("animeFig server is running");
 });
 
-app.get("/figurein", (req, res) => {
-    res.send(figurein);
-});
+// app.get("/figurein", (req, res) => {
+//     res.send(figurein);
+// });
 
-app.get("/figurein/:id", (req, res) => {
-    const id = req.params.id;
+// app.get("/figurein/:id", (req, res) => {
+//     const id = req.params.id;
 
-    const figure = figurein.find((n) => n._id === id);
-    res.send(figure);
-});
+//     const figure = figurein.find((n) => n._id === id);
+//     res.send(figure);
+// });
 
-app.get("/category", (req, res) => {
-    res.send(category);
-});
+// app.get("/category", (req, res) => {
+//     res.send(category);
+// });
 
-app.get("/category/:id", (req, res) => {
-    const id = parseInt(req.params.id);
+// app.get("/category/:id", (req, res) => {
+//     const id = parseInt(req.params.id);
 
-    if (id === 0) {
-        res.send(figurein);
-    } else {
-        const figsCategory = figurein.filter((figs) => parseInt(figs.category_id) === id);
-        res.send(figsCategory);
-    }
-});
+//     if (id === 0) {
+//         res.send(figurein);
+//     } else {
+//         const figsCategory = figurein.filter((figs) => parseInt(figs.category_id) === id);
+//         res.send(figsCategory);
+//     }
+// });
 
 app.listen(port, () => {
     console.log(`animeFig server is running at ${port}`);
