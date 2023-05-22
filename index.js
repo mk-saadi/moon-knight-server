@@ -1,9 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 
-const figurein = require("./data.json");
-const category = require("./category.json");
-
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,6 +8,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// mongoDB
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.mrt0xqs.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -24,8 +22,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        // await client.connect();
-
         const figureCollection = client.db("animeFig").collection("figures");
         const addedFigureCollection = client.db("animeFig").collection("addedFigure");
 
@@ -48,12 +44,6 @@ async function run() {
             res.send(result);
         });
 
-        // app.get("/addedFigure", async (req, res) => {
-        //     const cursor = addedFigureCollection.find();
-        //     const result = await cursor.toArray();
-        //     res.send(result);
-        // });
-
         app.get("/addedFigure", async (req, res) => {
             let query = {};
 
@@ -61,7 +51,31 @@ async function run() {
                 query = { email: req.query.email };
             }
 
-            const result = await addedFigureCollection.find(query).toArray();
+            if (req.query.search) {
+                query.name = { $regex: req.query.search, $options: "i" };
+            }
+
+            if (req.params.category) {
+                if (
+                    req.params.category == "Scale Figures" ||
+                    req.params.category == "Bishoujo Figures" ||
+                    req.params.category == "Figma" ||
+                    req.params.category == "Nendoroid"
+                ) {
+                    query.category = req.params.category;
+                } else {
+                    query.category = { $regex: req.params.category, $options: "i" };
+                }
+            }
+
+            const limit = parseInt(req.query.limit) || 20;
+
+            const result = await addedFigureCollection
+                .find(query)
+                .sort({ price: -1 })
+                .limit(limit)
+                .toArray();
+
             res.send(result);
         });
 
@@ -119,32 +133,6 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
     res.send("animeFig server is running");
 });
-
-// app.get("/figurein", (req, res) => {
-//     res.send(figurein);
-// });
-
-// app.get("/figurein/:id", (req, res) => {
-//     const id = req.params.id;
-
-//     const figure = figurein.find((n) => n._id === id);
-//     res.send(figure);
-// });
-
-// app.get("/category", (req, res) => {
-//     res.send(category);
-// });
-
-// app.get("/category/:id", (req, res) => {
-//     const id = parseInt(req.params.id);
-
-//     if (id === 0) {
-//         res.send(figurein);
-//     } else {
-//         const figsCategory = figurein.filter((figs) => parseInt(figs.category_id) === id);
-//         res.send(figsCategory);
-//     }
-// });
 
 app.listen(port, () => {
     console.log(`animeFig server is running at ${port}`);
