@@ -68,13 +68,9 @@ async function run() {
                 }
             }
 
-            const limit = parseInt(req.query.limit) || 20;
+            // const limit = parseInt(req.query.limit) || 20;     .limit(limit)
 
-            const result = await addedFigureCollection
-                .find(query)
-                .sort({ price: -1 })
-                .limit(limit)
-                .toArray();
+            const result = await addedFigureCollection.find(query).sort({ price: -1 }).toArray();
 
             res.send(result);
         });
